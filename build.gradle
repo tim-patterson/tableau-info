@@ -1,6 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.2.41'
+    ext.kotlin_version = '1.2.50'
     ext.front_end_plugin_version = '0.0.31'
+    ext.node_version = '10.4.1'
 
     repositories {
         mavenCentral()
@@ -18,7 +19,6 @@ group 'timpatterson'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'org.jetbrains.kotlin.frontend'
-
 apply plugin: 'kotlin2js'
 
 compileKotlin2Js {
@@ -29,7 +29,7 @@ compileKotlin2Js {
 }
 
 kotlinFrontend {
-    downloadNodeJsVersion = "10.4.1"
+    downloadNodeJsVersion = node_version
 
     npm {
         dependency "style-loader"
