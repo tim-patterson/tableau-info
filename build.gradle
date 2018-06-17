@@ -1,0 +1,53 @@
+buildscript {
+    ext.kotlin_version = '1.2.41'
+    ext.front_end_plugin_version = '0.0.31'
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-eap"
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-frontend-plugin:$front_end_plugin_version"
+    }
+}
+
+group 'timpatterson'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'org.jetbrains.kotlin.frontend'
+
+apply plugin: 'kotlin2js'
+
+compileKotlin2Js {
+    kotlinOptions.metaInfo = true
+    kotlinOptions.outputFile = "$project.buildDir.path/js/${project.name}.js"
+    kotlinOptions.sourceMap = true
+    kotlinOptions.moduleKind = 'commonjs'
+}
+
+kotlinFrontend {
+    downloadNodeJsVersion = "10.4.1"
+
+    npm {
+        dependency "style-loader"
+        dependency "css-loader"
+        dependency "foundation-sites"
+    }
+
+    webpackBundle {
+        bundleName = "main"
+        contentPath = file('src/main/web')
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+}
