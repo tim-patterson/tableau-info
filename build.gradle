@@ -1,6 +1,7 @@
 buildscript {
     ext.kotlin_version = '1.2.50'
     ext.front_end_plugin_version = '0.0.31'
+    ext.kotlinx_html_version = '0.6.10'
     ext.node_version = '10.4.1'
 
     repositories {
@@ -45,9 +46,11 @@ kotlinFrontend {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile "org.jetbrains.kotlinx:kotlinx-html-js:$kotlinx_html_version"
     testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
 }
