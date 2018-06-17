@@ -2,10 +2,12 @@ package tableauinfo
 
 import org.w3c.dom.DragEvent
 import org.w3c.dom.Element
+import org.w3c.dom.ScrollIntoViewOptions
 import org.w3c.dom.asList
 import org.w3c.dom.events.Event
 import org.w3c.files.FileReader
 import kotlin.browser.document
+import kotlin.browser.window
 
 // Require styles
 external fun require(name: String): dynamic
@@ -40,10 +42,10 @@ private fun initializeDropEvents(dropArea: Element) {
 private fun handleDrop(event: Event) {
     if (event is DragEvent) {
         event.dataTransfer?.files?.let {
-            it.asList().forEach { file ->
+            it.asList().forEachIndexed { idx, file ->
                 val reader = FileReader()
                 reader.onloadend = {
-                    processFile(file.name, file.size, reader.result as String)
+                    processFile(file.name, file.size, reader.result as String, idx ==0)
                 }
                 reader.readAsText(file)
             }
@@ -51,7 +53,7 @@ private fun handleDrop(event: Event) {
     }
 }
 
-private fun processFile(fileName: String, size: Int, contents: String){
+private fun processFile(fileName: String, size: Int, contents: String, scrollTo: Boolean) {
     val contentArea = document.getElementById("content-area")!!
 
     println("Processing file $fileName")
@@ -59,5 +61,8 @@ private fun processFile(fileName: String, size: Int, contents: String){
     val xmlDoc = parser.parseFromString(contents, "text/xml") as org.w3c.dom.Document
 
     val twbInfo = parseTwb(fileName, size, xmlDoc)
-    contentArea.appendChild(renderTwbInfo(twbInfo))
+    val view = renderTwbInfo(twbInfo)
+    contentArea.appendChild(view)
+    
+    if (scrollTo) { view.scrollIntoView(true) }
 }
