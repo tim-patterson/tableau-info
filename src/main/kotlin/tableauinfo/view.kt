@@ -46,25 +46,29 @@ fun renderTwbInfo(twbInfo: TwbInfo): Element {
             }
         }
 
-        hr("cell")
+        if(twbInfo.thumbnails.isNotEmpty()) {
+            hr("cell")
 
-        h5("cell") { + "Thumbnails"}
-        twbInfo.thumbnails.forEach {
-            div("cell medium-3 small-6") {
-                div("card") {
-                    img(src = imageToDataUrl(it))
+            h5("cell") { +"Thumbnails" }
+            twbInfo.thumbnails.forEach {
+                div("cell medium-3 small-6") {
+                    div("card") {
+                        img(src = imageToDataUrl(it))
+                    }
                 }
             }
         }
 
-        hr("cell")
+        if(twbInfo.externalShapes.isNotEmpty()) {
+            hr("cell")
 
-        h5("cell") { + "External Shapes"}
-        twbInfo.externalShapes.forEach { (name, content) ->
-            div("cell medium-3 small-6") {
-                div("card") {
-                    div("card-divider") { + name }
-                    img(src = imageToDataUrl(content))
+            h5("cell") { +"External Shapes" }
+            twbInfo.externalShapes.forEach { (name, content) ->
+                div("cell medium-3 small-6") {
+                    div("card") {
+                        div("card-divider") { +name }
+                        img(src = imageToDataUrl(content))
+                    }
                 }
             }
         }
