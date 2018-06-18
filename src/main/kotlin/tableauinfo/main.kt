@@ -6,6 +6,8 @@ import org.w3c.dom.asList
 import org.w3c.dom.events.Event
 import org.w3c.files.FileReader
 import kotlin.browser.document
+import kotlin.browser.window
+import kotlin.js.json
 
 // Require styles
 external fun require(name: String): dynamic
@@ -62,5 +64,7 @@ private fun processFile(fileName: String, size: Int, contents: String, scrollTo:
     val view = renderTwbInfo(twbInfo)
     contentArea.appendChild(view)
 
-    if (scrollTo) { view.scrollIntoView(true) }
+    window.requestAnimationFrame {
+        if (scrollTo) { view.scrollIntoView(json("block" to "start",  "behavior" to "smooth" )) }
+    }
 }
