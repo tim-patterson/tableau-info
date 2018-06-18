@@ -2,12 +2,10 @@ package tableauinfo
 
 import org.w3c.dom.DragEvent
 import org.w3c.dom.Element
-import org.w3c.dom.ScrollIntoViewOptions
 import org.w3c.dom.asList
 import org.w3c.dom.events.Event
 import org.w3c.files.FileReader
 import kotlin.browser.document
-import kotlin.browser.window
 
 // Require styles
 external fun require(name: String): dynamic
@@ -44,7 +42,7 @@ private fun handleDrop(event: Event) {
         event.dataTransfer?.files?.let {
             it.asList().forEachIndexed { idx, file ->
                 val reader = FileReader()
-                reader.onloadend = {
+                reader.onload = {
                     processFile(file.name, file.size, reader.result as String, idx ==0)
                 }
                 reader.readAsText(file)
@@ -63,6 +61,6 @@ private fun processFile(fileName: String, size: Int, contents: String, scrollTo:
     val twbInfo = parseTwb(fileName, size, xmlDoc)
     val view = renderTwbInfo(twbInfo)
     contentArea.appendChild(view)
-    
+
     if (scrollTo) { view.scrollIntoView(true) }
 }
