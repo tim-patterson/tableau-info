@@ -53,9 +53,18 @@ private fun handleDrop(event: Event) {
                 }
             }
 
-            Promise.all(promises.toTypedArray()).then {
-                it.forEach { contentArea.appendChild(it) }
-                it.firstOrNull()?.let { it.scrollIntoView(ScrollIntoViewOptions(block = ScrollLogicalPosition.START, behavior = ScrollBehavior.SMOOTH)) }
+            // We actually want to generate a chain of promises here
+            // that do the resolving of the file processing promises.
+            // This ensures that items get added in the same order that they're
+            // "dropped"
+            var chain: Promise<Any> = Promise.resolve(Unit)
+            promises.forEachIndexed { index, p ->
+                chain = chain.then { p.then {
+                    contentArea.appendChild(it)
+                    if(index == 0) {
+                        it.scrollIntoView(ScrollIntoViewOptions(block = ScrollLogicalPosition.START, behavior = ScrollBehavior.SMOOTH))
+                    }
+                } }
             }
         }
     }
