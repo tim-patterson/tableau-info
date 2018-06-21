@@ -44,27 +44,20 @@ private fun handleDrop(event: Event) {
                 Promise<Element> { resolve, reject ->
                     val reader = FileReader()
                     reader.onload = {
-                        resolve(processFile(file.name, file.size, reader.result as String))
+                            resolve(processFile(file.name, file.size, reader.result as String))
                     }
                     reader.onerror = {
-                        resolve(processFile(file.name, file.size, ""))
+                        reject(Exception("Error loading file"))
                     }
                     reader.readAsText(file)
                 }
             }
 
-            // We actually want to generate a chain of promises here
-            // that do the resolving of the file processing promises.
-            // This ensures that items get added in the same order that they're
-            // "dropped"
-            var chain: Promise<Any> = Promise.resolve(Unit)
-            promises.forEachIndexed { index, p ->
-                chain = chain.then { p.then {
-                    contentArea.appendChild(it)
-                    if(index == 0) {
-                        it.scrollIntoView(ScrollIntoViewOptions(block = ScrollLogicalPosition.START, behavior = ScrollBehavior.SMOOTH))
-                    }
-                } }
+            Promise.sequentiallyIndexed(promises) { index, element ->
+                contentArea.appendChild(element)
+                if(index == 0) {
+                    element.scrollIntoView(ScrollIntoViewOptions(block = ScrollLogicalPosition.START, behavior = ScrollBehavior.SMOOTH))
+                }
             }
         }
     }
